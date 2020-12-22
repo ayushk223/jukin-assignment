@@ -16,7 +16,7 @@ covidApp.controller('covidController',
 				$scope.viewComment=false;
 				$scope.addCovidComments = {
 					 comments: " ",
-					word: /^\s*\w*\s*$/
+					word: /^.+$/
 				}
 				$scope.selectedValue='';
 				$scope.method='';
@@ -28,16 +28,16 @@ covidApp.controller('covidController',
 				$scope.loadCntryData = function(){
 				$scope.enableLoader=true;
 					covidDetailsService.fetchCountryCodeMap().then(function(data){
-						if(data['error']){
-							alert(data['error']);
-							$scope.countryData=data['response'];
-						}else{
+//						if(data['error']){
+//							console.log(data['error']);
+//							$scope.countryData=data['response'];
+//						}else{
 							console.log("country map data="+data);
 							$scope.countryData=data;
-						}
-						$scope.enableLoader=false;
+//						}
+//						$scope.enableLoader=false;
 					},function(error){
-						alert("Error Occurred");
+						console.log("Error Occurred");
 					});
 				}
 				
@@ -46,7 +46,7 @@ covidApp.controller('covidController',
 					covidDetailsService.fetchCountries().then(function(data){
 					
 						if(data['error']){
-							alert(data['error']);
+							console.log(data['error']);
 							$scope.countries=data['response'];
 						}else{
 							$scope.countries=data;
@@ -54,7 +54,7 @@ covidApp.controller('covidController',
 						}
 						$scope.enableLoader=false;
 					},function(error){
-							alert("Error Occurred");
+							console.log("Error Occurred");
 					});
 				}
 				
@@ -66,7 +66,7 @@ covidApp.controller('covidController',
 				$scope.enableLoader=true;
 					covidDetailsService.getTotal().then(function(data){
 						if(data['error']){
-							alert(data['error']);
+							console.log(data['error']);
 							$scope.covidData=data['response']
 						}else{
 							$scope.covidData=data
@@ -74,7 +74,7 @@ covidApp.controller('covidController',
 						}
 						$scope.enableLoader=false;
 					},function(error){
-						alert("Error Occurred");
+						console.log("Error Occurred");
 					});
 
 				}
@@ -90,16 +90,17 @@ covidApp.controller('covidController',
 					$scope.enableLoader=true;
 					covidDetailsService.loadCountryDataByName(name).then(function(data){
 						if(data['error']){
-							alert(data['error']);
+							console.log(data['error']);
 							$scope.countryByName=data['response'];
 						}else{
 							$scope.countryByName=data;
+							$scope.viewCommentPage();
 							console.log("country By Name data="+$scope.countryByName);
 						}
 						$scope.enableLoader=false;
 					
 					}, function(err){
-						alert("Error Occurred");
+						console.log("Error Occurred");
 					});
 					
 				}
@@ -116,14 +117,15 @@ covidApp.controller('covidController',
 					$scope.enableLoader=true;
 					covidDetailsService.loadCountryDataByCode(code).then(function(data){
 					if(data['error']){
-						alert(data['error']);
+						console.log(data['error']);
 						$scope.countryByCode=data['response'];
 					}else{
 						$scope.countryByCode=data;
+						$scope.viewCommentPage();
 					}
 					$scope.enableLoader=false;
 					}, function(err){
-						alert("Error Occurred");
+						console.log("Error Occurred");
 					});
 					
 				}
@@ -132,7 +134,7 @@ covidApp.controller('covidController',
 					$scope.home=false;
 					$scope.countryType = true;
 					$scope.country=false;
-					$scope.data =angular.copy($scope.countryData["countries"]);
+					$scope.data =angular.copy($scope.countryData["countries"].sort());
 					$scope.method='name';
 					$scope.text='Country Name';
 					$scope.byName=false;
@@ -147,7 +149,7 @@ covidApp.controller('covidController',
 					$scope.home=false;
 					$scope.countryType = true;
 					$scope.country=false;
-					$scope.data = angular.copy($scope.countryData["code"]);
+					$scope.data = angular.copy($scope.countryData["code"].sort());
 					$scope.method='code';
 					$scope.text='Country Code';
 					$scope.byCode=false;
@@ -178,7 +180,7 @@ covidApp.controller('covidController',
 							$scope.addCommentsByName($scope.selectedValue);
 						}
 					}else{
-						alert("Comments cannot be blank");
+						console.log("Comments cannot be blank");
 					}
 				}
 				
@@ -186,15 +188,15 @@ covidApp.controller('covidController',
 				$scope.enableLoader=true;
 					covidDetailsService.addCommentByCode(value,$scope.addCovidComments.comments).then(function(data){
 						if(data['error']){
-							alert(data['error']);
+							console.log(data['error']);
 						}else{
-							alert("updated");
+							console.log("updated");
 						}
 						$scope.addCovidComments.comments='';
 						$scope.enableLoader=false;
 					
 					}, function(err){
-						alert("Error Occurred");
+						console.log("Error Occurred");
 					});
 				}
 				
@@ -202,14 +204,14 @@ covidApp.controller('covidController',
 				$scope.enableLoader=true;
 					covidDetailsService.addCommentByName(value,$scope.addCovidComments.comments).then(function(data){
 					if(data['error']){
-						alert(data['error']);
+						console.log(data['error']);
 					}else{
-						alert("Updated Comment by Name");
+						console.log("Updated Comment by Name");
 					}
 					$scope.enableLoader=false;
 						$scope.addCovidComments.comments='';
 					}, function(err){
-						alert("Error Occurred");
+						console.log("Error Occurred");
 					});
 				}
 				
@@ -258,6 +260,7 @@ covidApp.controller('covidController',
 					if(!$scope.countryByName  || !$scope.countryByName[0] || $scope.countryByName[0]['country']!==name){
 						$scope.loadCountryDetailsByName(name);
 					}
+					$scope.viewCommentPage();
 				}
 				
 				$scope.enableCodeHome = function(code){
@@ -270,21 +273,21 @@ covidApp.controller('covidController',
 					if(!$scope.countryByCode || !$scope.countryByCode[0] || $scope.countryByCode.length==0 || $scope.countryByCode[0]['code']!==code){
 						$scope.loadCountryDetailsByCode(code);
 					}
-					
+					$scope.viewCommentPage();
 				}
 				
 				
 				$scope.setFavourite = function(country){
 					country.favourite=!country.favourite;
 					covidDetailsService.updateCountry(country).then(function(data){
-					if(data['error']){
-						alert(data['error']);
-					}else{
-						alert("Country favourites updated");
-					}
+//					if(data['error']){
+//						console.log(data['error']);
+//					}else{
+						console.log("Country favourites updated");
+//					}
 					},
 					function(error){
-						alert("Error Occurred");
+						console.log("Error Occured in setFavourite");
 					});
 					
 				}
@@ -303,7 +306,7 @@ covidApp.controller('covidController',
 					if($scope.method === 'code'){
 						covidDetailsService.retrieveCommentByCode($scope.selectedValue).then(function(data){
 						if(data['error']){
-						alert(data['error']);
+						console.log(data['error']);
 						$scope.myComment=data['response'];
 					}else{
 							$scope.myComment=data;
@@ -317,7 +320,7 @@ covidApp.controller('covidController',
 					
 						covidDetailsService.retrieveCommentByName($scope.selectedValue).then(function(data){
 						if(data['error']){
-						alert(data['error']);
+						console.log(data['error']);
 						$scope.myComment=data['response'];
 					}else{
 						$scope.myComment=data;

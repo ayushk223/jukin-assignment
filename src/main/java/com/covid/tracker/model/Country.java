@@ -6,7 +6,6 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.covid.tracker.repsitory.CountryRepository;
 
 @Document(collection = "country")
 public class Country {

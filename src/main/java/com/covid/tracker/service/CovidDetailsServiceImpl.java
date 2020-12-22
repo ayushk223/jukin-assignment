@@ -63,11 +63,11 @@ public class CovidDetailsServiceImpl implements CovidDetailsService {
 		List<Country> countriesInDB = new ArrayList<>();
 		try {
 			if(fetchDb) {
-				return countryRepository.findAll();
+				return countryRepository.findAllOrderByFavourite();
 			}
 			if (isOutdated) {
-				countries = covidRestRepository.getListOfCountries();
-				countriesInDB = countryRepository.findAll();
+				countries = covidRestRepository.findAllCountriesOrderByFavourite();
+				countriesInDB = countryRepository.findAllOrderByFavourite();
 				List<String> countriesName = countriesInDB.stream().map(Country::getName).collect(Collectors.toList());
 
 				countriesInDB.addAll(countries.stream().filter(o -> !countriesName.contains(o.getName()))
@@ -77,7 +77,7 @@ public class CovidDetailsServiceImpl implements CovidDetailsService {
 				isOutdated = false;
 
 			} else {
-				countriesInDB = countryRepository.findAll();
+				countriesInDB = countryRepository.findAllOrderByFavourite();
 			}
 
 		} catch (CovidRapidAPIException e) {
@@ -102,7 +102,7 @@ public class CovidDetailsServiceImpl implements CovidDetailsService {
 				return totalRepository.findAll();
 			}
 			if (isOutdated) {
-				covidDetails = covidRestRepository.getTotal();
+				covidDetails = covidRestRepository.getTotalCovidCases();
 				final CovidTotal totals = covidDetails.get(0);
 				covidDetailsInDB = totalRepository.findAll();
 				// There will always be one record
@@ -275,15 +275,17 @@ public class CovidDetailsServiceImpl implements CovidDetailsService {
 	@Override
 	public Map<String, Set<String>> getCountriesCodeMap() {
 		try {
-			List<Country> countries = countryRepository.findAll();
-			if (CollectionUtils.isEmpty(countries)) {
+			/** Removed extra database call to fetch countries */
+			List<Country> countries ; //countryRepository.findAll();
+			/** No need of this if condition */
+//			if (CollectionUtils.isEmpty(countries)) {
 				// call countries services
-				countries = getCountries(false);
-				if (CollectionUtils.isEmpty(countries)) {
-					return Collections.emptyMap();
-				}
-				countryRepository.saveAll(countries);
+			countries = getCountries(false);
+			if (CollectionUtils.isEmpty(countries)) {
+				return Collections.emptyMap();
 			}
+				countryRepository.saveAll(countries);
+//			}
 
 			Map<String, Set<String>> countriesCodeMap = new HashMap<>();
 			for (Country country : countries) {

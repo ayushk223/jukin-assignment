@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +22,6 @@ import org.springframework.web.client.RestTemplate;
 import com.covid.tracker.model.Country;
 import com.covid.tracker.model.CovidData;
 import com.covid.tracker.model.CovidTotal;
-import com.covid.tracker.model.exception.CovidException;
 import com.covid.tracker.model.exception.CovidRapidAPIException;
 
 @Repository
@@ -33,26 +31,26 @@ public class CovidRestRepositoryImpl implements CovidRestRepository {
 	@Autowired
 	private RestTemplate restTemplate;
 
-	@Value("https://covid-19-data.p.rapidapi.com/help/countries?format=json")
+	@Value("${get.countries.api.url}")
 	private String countriesApiUrl;
 
-	@Value("https://covid-19-data.p.rapidapi.com/totals?format=json")
+	@Value("${get.total.api.url}")
 	private String totalApiUrl;
 
-	@Value("https://covid-19-data.p.rapidapi.com/country?format={format}&name={name}")
+	@Value("${get.covid.name.api.url}")
 	private String covidByNameUrl;
 
-	@Value("https://covid-19-data.p.rapidapi.com/country/code?format={format}&code={code}")
+	@Value("${get.covid.code.api.url}")
 	private String covidByCodeUrl;
 
-	@Value("covid-19-data.p.rapidapi.com")
+	@Value("${api.host}")
 	private String apiHost;
 
-	@Value("cc119a2a07mshb6adc33a3e346b9p1c17e8jsn6e17f47f3331")
+	@Value("${api.key}")
 	private String apiKey;
 
 	@Override
-	public List<Country> getListOfCountries() {
+	public List<Country> findAllCountriesOrderByFavourite() {
 		LOGGER.info("Start of getListOfCountries method ==> ");
 		HttpHeaders headers = buildRequest();
 		HttpEntity<String> request = new HttpEntity<>(headers);
@@ -66,8 +64,19 @@ public class CovidRestRepositoryImpl implements CovidRestRepository {
 				LOGGER.info("Empty RESPONSE Received from API", resp);
 				return resp;
 			}
+			
+//			Comparator<Country> comparator= new Comparator<Country>() {
+//				public int compare(Country c1, Country c2) {
+//					if(c1.isFavourite())
+//						return -1;
+//					else if(c2.isFavourite())
+//						return 1;
+//					return 0;
+//				};
+//			};
+//			Collections.sort(resp,comparator);
 			LOGGER.info("End of Rest Template Exhange and response received {}  with size ==> ", resp, resp.size());
-			return response.getBody();
+			return resp;
 		} catch (Exception e) {
 			LOGGER.error("Exception occurred {}", e);
 			throw new CovidRapidAPIException(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage(),
@@ -84,7 +93,7 @@ public class CovidRestRepositoryImpl implements CovidRestRepository {
 	}
 
 	@Override
-	public List<CovidTotal> getTotal() {
+	public List<CovidTotal> getTotalCovidCases() {
 		LOGGER.info("Start of getTotal method ==> ");
 		HttpHeaders headers = buildRequest();
 		HttpEntity<String> request = new HttpEntity<>(headers);
