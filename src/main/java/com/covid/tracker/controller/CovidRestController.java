@@ -27,11 +27,11 @@ public class CovidRestController {
 	@GetMapping(value = { "/countries" })
 	public Object getAllCountries() {
 		try {
-			return covidDetailsService.getCountries(false);
+			return covidDetailsService.getCountries(true);
 		} catch (CovidRapidAPIException e) {
 			Object responseMap = new HashMap<>();
 			Object country = covidDetailsService.getCountries(true);
-			((HashMap<Object, Object>) responseMap).put("error", "Data is fetched from Database");
+			((HashMap) responseMap).put("error", "Data is fetched from Database");
 			((HashMap) responseMap).put("response", country);
 			return responseMap;
 		}

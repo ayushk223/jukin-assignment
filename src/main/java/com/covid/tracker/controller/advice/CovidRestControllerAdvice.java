@@ -1,6 +1,7 @@
 package com.covid.tracker.controller.advice;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -16,13 +17,13 @@ public class CovidRestControllerAdvice extends ResponseEntityExceptionHandler {
 	@ExceptionHandler(value = { CovidRapidAPIException.class})
 	protected ResponseEntity<Object> handleException(CovidRapidAPIException ex, WebRequest request) {
 		String bodyOfResponse = ex.getMessage();
-		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), ex.getStatus(), request);
+		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(),ex.getStatus()!=null?ex.getStatus():HttpStatus.INTERNAL_SERVER_ERROR, request);
 	}
 	
 	@ExceptionHandler(value = { CovidException.class})
 	protected ResponseEntity<Object> handleException(CovidException ex, WebRequest request) {
 		String bodyOfResponse = ex.getMessage();
-		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), ex.getStatus(), request);
+		return handleExceptionInternal(ex, bodyOfResponse, new HttpHeaders(), ex.getStatus()!=null?ex.getStatus():HttpStatus.INTERNAL_SERVER_ERROR, request);
 	}
 
 }

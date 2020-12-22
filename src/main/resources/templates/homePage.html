@@ -76,6 +76,11 @@
 				<br />
 				<div class="col-md-12">
 					<!--  Add back button here -->
+					<div class="col-md-9"></div>
+					<div class="col-md-3">
+							<button class="btn btn-primary" ng-click="enableHome()">Back</button>
+						</div>
+						<br/>
 					<div class="row">
 						<div class="col-md-2 table-bordered text-center ">
 							<h5 class="bd">Name</h5>
@@ -132,9 +137,9 @@
 					<div class="row" style="padding-top: 4%; padding-left: 7%">
 
 						<div class="col-md-9"></div>
-						<div class="col-md-3">
+						<!-- <div class="col-md-3">
 							<button class="btn btn-primary" ng-click="enableHome()">Back</button>
-						</div>
+						</div> -->
 
 					</div>
 
@@ -147,23 +152,29 @@
 				</div>
 				<div class="col-md-4">
 					<select ng-model="selectedValue" class="form-control">
-						<option ng-repeat="y in data">{{y}}</option>
+						<option ng-repeat="y in data | orderBy:y">{{y}}</option>
 					</select>
 				</div>
-				<div class="col-md-4"></div>
+				<div class="col-md-4"> 
+				<button class=" btn btn-primary"
+						ng-click="loadCovidDetailsByInput(selectedValue)">Submit</button>
+				</div>
 				<br /> <br />
-				<div class="col-md-4"></div>
+				<!-- <div class="col-md-4"></div>
 				<div class="col-md-3"></div>
 				<div class="col-md-4 ">
-					<br /> <br />
-					<button class=" btn btn-primary"
-						ng-click="loadCovidDetailsByInput(selectedValue)">Submit</button>
+					<br /> <br /> -->
+					
 				</div>
 			</div>
 
 			<div ng-if="byName  && !loader">
 
 				<!--  Add back button here -->
+				<div class="col-md-9"></div>
+				<div class="col-md-3">
+							<button class="btn btn-primary" ng-click="enableHome()">Back</button>
+						</div>
 				<div class="col-md-12 table pdname">
 					<div class="row ">
 
@@ -220,6 +231,10 @@
 			<div ng-if="byCode  && !loader">
 				<div class="col-md-12 table pdname">
 					<!--  Add back button here -->
+					<div class="col-md-9"></div>
+				<div class="col-md-3">
+							<button class="btn btn-primary" ng-click="enableHome()">Back</button>
+							</div>
 					<div class="row ">
 
 						<div class="col-md-2 table-bordered text-center bd ">
