@@ -152,7 +152,7 @@
 				</div>
 				<div class="col-md-4">
 					<select ng-model="selectedValue" class="form-control">
-						<option ng-repeat="y in data | orderBy: selectedValue">{{y}}</option>
+						<option ng-repeat="y in data | orderBy:y">{{y}}</option>
 					</select>
 				</div>
 				<div class="col-md-4"> 
